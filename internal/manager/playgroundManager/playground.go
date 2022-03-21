@@ -142,7 +142,6 @@ func StartNewGame() {
 
 	character := PickCharacter()
 	fmt.Println("Player 1, you are playing as ", character)
-	tictacgoAIManager.SetAIName(switchUser(character))
 	var result string
 
 	for {
@@ -171,13 +170,14 @@ func StartNewGame() {
 			character = switchUser(character)
 
 		} else {
+			character = switchUser(character)
 			if gameMode == "1" {
 				row, col := tictacgoAIManager.GetAIMove(tictacPlayground)
 				tictacPlayground.Input(row, col, character)
 			} else if gameMode == "2" {
 				getMove(character)
 			}
-			DisplayBoard(tictacPlayground.GetBoard())
+			go DisplayBoard(tictacPlayground.GetBoard())
 			result = checkResult()
 			if result != "" {
 				break
@@ -189,7 +189,6 @@ func StartNewGame() {
 			if result != "" {
 				break
 			}
-			character = switchUser(character)
 		}
 	}
 	InitilizeBoard()
