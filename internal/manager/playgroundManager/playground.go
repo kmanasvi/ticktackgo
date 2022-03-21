@@ -119,12 +119,14 @@ func switchUser(character string) string {
 	return "X"
 }
 
-func checkResult(board [][]string) string {
+func checkResult() string {
 	result := tictacPlayground.IsGameOver()
 	if result == "X" || result == "O" {
+		fmt.Printf("Player %s wins!\n", result)
 		return result
 	}
 	if tictacPlayground.IsFull() {
+		fmt.Printf("Game is a draw!\n")
 		return "draw"
 	}
 	return ""
@@ -149,7 +151,7 @@ func StartNewGame() {
 			getMove(character)
 			DisplayBoard(tictacPlayground.GetBoard())
 
-			result = checkResult(tictacPlayground.GetBoard())
+			result = checkResult()
 			if result != "" {
 				break
 			}
@@ -162,7 +164,7 @@ func StartNewGame() {
 				getMove(character)
 			}
 			DisplayBoard(tictacPlayground.GetBoard())
-			result = checkResult(tictacPlayground.GetBoard())
+			result = checkResult()
 			if result != "" {
 				break
 			}
@@ -176,14 +178,14 @@ func StartNewGame() {
 				getMove(character)
 			}
 			DisplayBoard(tictacPlayground.GetBoard())
-			result = checkResult(tictacPlayground.GetBoard())
+			result = checkResult()
 			if result != "" {
 				break
 			}
 			character = switchUser(character)
 			getMove(character)
 			DisplayBoard(tictacPlayground.GetBoard())
-			result = checkResult(tictacPlayground.GetBoard())
+			result = checkResult()
 			if result != "" {
 				break
 			}
