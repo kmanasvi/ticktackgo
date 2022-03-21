@@ -7,6 +7,11 @@ import (
 
 var tictacGoAI = playgroundAI.NewAI("O")
 
+//Set the AI name
+func SetAIName(name string) {
+	tictacGoAI.SetName(name)
+}
+
 func GetAIMove(board *playground.Board) (int, int) {
 	r, c := tictacGoAI.AILevel(board.GetBoard())
 	return r, c

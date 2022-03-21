@@ -11,6 +11,10 @@ type AI struct {
 	AILevel func(board [][]string) (int, int)
 }
 
+func (ai *AI) SetName(name string) {
+	ai.player = name
+}
+
 func (ai *AI) AILevelEasy(board [][]string) (int, int) {
 	return ai.GetSimpleMove(board)
 }

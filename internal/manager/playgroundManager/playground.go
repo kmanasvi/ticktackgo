@@ -84,7 +84,7 @@ func getAILevelINput() {
 	getAILevelINput()
 }
 
-func getMove(character string) string {
+func getMove(character string) {
 	err := true
 	for {
 		row, col := getPlayersMove()
@@ -95,10 +95,6 @@ func getMove(character string) string {
 		}
 		break
 	}
-	if character == "X" {
-		return "O"
-	}
-	return "X"
 }
 
 func getPlayersMove() (int, int) {
@@ -116,6 +112,13 @@ func DisplayBoard(board [][]string) {
 	fmt.Print("\n")
 }
 
+func switchUser(character string) string {
+	if character == "X" {
+		return "O"
+	}
+	return "X"
+}
+
 func StartNewGame() {
 	tictacPlayground.ClearBoard()
 	gameMode := SelectGameModes()
@@ -126,6 +129,7 @@ func StartNewGame() {
 
 	character := PickCharacter()
 	fmt.Println("Player 1, you are playing as ", character)
+	tictacgoAIManager.SetAIName(switchUser(character))
 
 	for {
 		result := tictacPlayground.IsGameOver()
@@ -139,16 +143,32 @@ func StartNewGame() {
 			break
 		}
 
-		character = getMove(character)
-		DisplayBoard(tictacPlayground.GetBoard())
+		if character == "X" {
+			getMove(character)
+			DisplayBoard(tictacPlayground.GetBoard())
+			character = switchUser(character)
+			if gameMode == "1" {
+				row, col := tictacgoAIManager.GetAIMove(tictacPlayground)
+				tictacPlayground.Input(row, col, character)
+			} else if gameMode == "2" {
+				getMove(character)
+			}
+			DisplayBoard(tictacPlayground.GetBoard())
+			character = switchUser(character)
 
-		if gameMode == "1" {
-			row, col := tictacgoAIManager.GetAIMove(tictacPlayground)
-			tictacPlayground.Input(row, col, character)
-		} else if gameMode == "2" {
-			character = getMove(character)
+		} else {
+			if gameMode == "1" {
+				row, col := tictacgoAIManager.GetAIMove(tictacPlayground)
+				tictacPlayground.Input(row, col, character)
+			} else if gameMode == "2" {
+				getMove(character)
+			}
+			DisplayBoard(tictacPlayground.GetBoard())
+			character = switchUser(character)
+			getMove(character)
+			DisplayBoard(tictacPlayground.GetBoard())
+			character = switchUser(character)
 		}
-		DisplayBoard(tictacPlayground.GetBoard())
 	}
 	InitilizeBoard()
 }
