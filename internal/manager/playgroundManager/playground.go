@@ -38,26 +38,29 @@ func InitilizeBoard() {
 	}
 }
 
+func checkResult() string {
+	//There may be a case where the game is over and the board is full as well so we want to check for that
+	result := tictacPlayground.IsGameOver()
+	if result == "X" || result == "O" {
+		fmt.Println("Game is over")
+		fmt.Println(result + " is the winner")
+		return result
+	}
+	if tictacPlayground.IsFull() {
+		fmt.Println("Game is a draw")
+		return "draw"
+	}
+	return ""
+}
+
 //Clears the board and starts a new game. Initializes the board when a game is finished
 func StartNewGame() {
 	tictacPlayground.ClearBoard()
 	character := "X"
 	err := true
+	var result string
 	for {
 		character = "X"
-
-		//There may be a case where the game is over and the board is full as well so we want to check for that
-		result := tictacPlayground.IsGameOver()
-		if result == "X" || result == "O" {
-			fmt.Println("Game is over")
-			fmt.Println(result + " is the winner")
-			break
-		}
-		if tictacPlayground.IsFull() {
-			fmt.Println("Game is a draw")
-			break
-		}
-
 		for {
 			row, col := getPlayersMove()
 			err = tictacPlayground.Input(row, col, character)
@@ -67,11 +70,20 @@ func StartNewGame() {
 			}
 			break
 		}
-		character = "O"
+
 		DisplayBoard(tictacPlayground.GetBoard())
+		result = checkResult()
+		if result != "" {
+			break
+		}
+		character = "O"
 		row, col := tictacgoAIManager.GetAIMove(tictacPlayground)
 		tictacPlayground.Input(row, col, character)
 		DisplayBoard(tictacPlayground.GetBoard())
+		result = checkResult()
+		if result != "" {
+			break
+		}
 	}
 	InitilizeBoard()
 }
