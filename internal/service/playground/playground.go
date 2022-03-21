@@ -17,6 +17,11 @@ func NewBoard() *Board {
 	return &Board{time.Now().String(), board}
 }
 
+func (b *Board) SetBoard(board [][]string) [][]string {
+	b.board = board
+	return b.board
+}
+
 func (b *Board) GetBoard() [][]string {
 	return b.board
 }

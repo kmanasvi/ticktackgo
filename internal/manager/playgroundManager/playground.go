@@ -17,12 +17,10 @@ import (
 
 var tictacPlayground = playground.NewBoard()
 
-//Returns the playground service
 func NewPlayground() *playground.Board {
 	return tictacPlayground
 }
 
-//Takes the user input to start a new game
 func InitilizeBoard() {
 	fmt.Println("Press s to start game, q to quit")
 	var input string
@@ -38,15 +36,98 @@ func InitilizeBoard() {
 	}
 }
 
-//Clears the board and starts a new game. Initializes the board when a game is finished
-func StartNewGame() {
-	tictacPlayground.ClearBoard()
-	character := "X"
+func PickCharacter() string {
+	fmt.Println("Player 1, Press x to play as X, o to play as O")
+	var input string
+	fmt.Scanln(&input)
+	if input == "x" {
+		return "X"
+	}
+	if input == "o" {
+		return "O"
+	}
+	fmt.Println("Invalid input")
+	return PickCharacter()
+}
+
+func SelectGameModes() string {
+	fmt.Println("Press 1 to play single player, 2 to play two player")
+	var input string
+	fmt.Scanln(&input)
+	if input == "1" {
+		return "1"
+	}
+	if input == "2" {
+		return "2"
+	}
+	fmt.Println("Invalid input")
+	return SelectGameModes()
+}
+
+func getAILevelINput() {
+	fmt.Println("Press 1 for Easy AI, 2 for Medium AI, 3 for Hard AI")
+	var input string
+	fmt.Scanln(&input)
+	if input == "1" {
+		tictacgoAIManager.SetAILevel(1)
+		return
+	}
+	if input == "2" {
+		tictacgoAIManager.SetAILevel(2)
+		return
+	}
+	if input == "3" {
+		tictacgoAIManager.SetAILevel(3)
+		return
+	}
+	fmt.Println("Invalid input")
+	getAILevelINput()
+}
+
+func getMove(character string) string {
 	err := true
 	for {
-		character = "X"
+		row, col := getPlayersMove()
+		err = tictacPlayground.Input(row, col, character)
+		if err {
+			fmt.Println("Invalid location inputted")
+			continue
+		}
+		break
+	}
+	if character == "X" {
+		return "O"
+	}
+	return "X"
+}
 
-		//There may be a case where the game is over and the board is full as well so we want to check for that
+func getPlayersMove() (int, int) {
+	fmt.Println("Enter the location of the character in the format r c where 0<=r<=2 and 0<=c<=2\n")
+	var row, col int
+	fmt.Scanf("%d %d", &row, &col)
+	return row, col
+}
+
+func DisplayBoard(board [][]string) {
+	for i := 0; i < 3; i++ {
+		fmt.Print(board[i])
+		fmt.Print("\n")
+	}
+	fmt.Print("\n")
+}
+
+func StartNewGame() {
+	tictacPlayground.ClearBoard()
+	gameMode := SelectGameModes()
+
+	if gameMode == "1" {
+		getAILevelINput()
+	}
+
+	character := PickCharacter()
+	fmt.Println("Player 1, you are playing as ", character)
+
+	for {
 		result := tictacPlayground.IsGameOver()
 		if result == "X" || result == "O" {
 			fmt.Println("Game is over")
@@ -58,37 +139,16 @@ func StartNewGame() {
 			break
 		}
 
-		for {
-			row, col := getPlayersMove()
-			err = tictacPlayground.Input(row, col, character)
-			if err {
-				fmt.Println("Invalid location inputted")
-				continue
-			}
-			break
-		}
-		character = "O"
+		character = getMove(character)
 		DisplayBoard(tictacPlayground.GetBoard())
-		row, col := tictacgoAIManager.GetAIMove(tictacPlayground)
-		tictacPlayground.Input(row, col, character)
+
+		if gameMode == "1" {
+			row, col := tictacgoAIManager.GetAIMove(tictacPlayground)
+			tictacPlayground.Input(row, col, character)
+		} else if gameMode == "2" {
+			character = getMove(character)
+		}
 		DisplayBoard(tictacPlayground.GetBoard())
 	}
 	InitilizeBoard()
-}
-
-//Takes the user input for the row and column
-func getPlayersMove() (int, int) {
-	fmt.Println("Enter the location of the character in the format r c where 0<=r<=2 and 0<=c<=2\n")
-	var row, col int
-	fmt.Scanf("%d %d", &row, &col)
-	return row, col
-}
-
-//Displays the board
-func DisplayBoard(board [][]string) {
-	for i := 0; i < 3; i++ {
-		fmt.Print(board[i])
-		fmt.Print("\n")
-	}
-	fmt.Print("\n")
 }
