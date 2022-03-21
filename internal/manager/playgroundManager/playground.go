@@ -119,6 +119,17 @@ func switchUser(character string) string {
 	return "X"
 }
 
+func checkResult(board [][]string) string {
+	result := tictacPlayground.IsGameOver()
+	if result == "X" || result == "O" {
+		return result
+	}
+	if tictacPlayground.IsFull() {
+		return "draw"
+	}
+	return ""
+}
+
 func StartNewGame() {
 	tictacPlayground.ClearBoard()
 	gameMode := SelectGameModes()
@@ -130,22 +141,19 @@ func StartNewGame() {
 	character := PickCharacter()
 	fmt.Println("Player 1, you are playing as ", character)
 	tictacgoAIManager.SetAIName(switchUser(character))
+	var result string
 
 	for {
-		result := tictacPlayground.IsGameOver()
-		if result == "X" || result == "O" {
-			fmt.Println("Game is over")
-			fmt.Println(result + " is the winner")
-			break
-		}
-		if tictacPlayground.IsFull() {
-			fmt.Println("Game is a draw")
-			break
-		}
 
 		if character == "X" {
 			getMove(character)
 			DisplayBoard(tictacPlayground.GetBoard())
+
+			result = checkResult(tictacPlayground.GetBoard())
+			if result != "" {
+				break
+			}
+
 			character = switchUser(character)
 			if gameMode == "1" {
 				row, col := tictacgoAIManager.GetAIMove(tictacPlayground)
@@ -154,6 +162,10 @@ func StartNewGame() {
 				getMove(character)
 			}
 			DisplayBoard(tictacPlayground.GetBoard())
+			result = checkResult(tictacPlayground.GetBoard())
+			if result != "" {
+				break
+			}
 			character = switchUser(character)
 
 		} else {
@@ -164,9 +176,17 @@ func StartNewGame() {
 				getMove(character)
 			}
 			DisplayBoard(tictacPlayground.GetBoard())
+			result = checkResult(tictacPlayground.GetBoard())
+			if result != "" {
+				break
+			}
 			character = switchUser(character)
 			getMove(character)
 			DisplayBoard(tictacPlayground.GetBoard())
+			result = checkResult(tictacPlayground.GetBoard())
+			if result != "" {
+				break
+			}
 			character = switchUser(character)
 		}
 	}
