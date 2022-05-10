@@ -73,10 +73,5 @@ Therefore clone this repo within a go/src/github folder.
     
     
 ## TODO
-    Implement 2 player mode.
-    Implement difficulty level to play against AI.
-    Easy being simple AI, Medium being random AI, Hard being minimax AI.
-    Implement a scoring system to determine who won the game.
     Implement a leaderboard to determine the top players.
     Implement a system which allows the user to save their game and load it later.
-    Allow the players to pick either X or O (i.e. to start or go second) when playing with the AI.
